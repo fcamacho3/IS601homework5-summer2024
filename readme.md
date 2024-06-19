@@ -1,4 +1,5 @@
-#IS601 Homework 5-- summer2024
+# IS601 Homework 5-- summer2024
+
 # Submission Details
 
 
@@ -20,7 +21,8 @@ pip install faker
 
 2. Clone this repo
 ```
-git clone 
+git clone git@github.com:fcamacho3/IS601homework5-summer2024.git
+cd IS601homework5-summer2024
 ```
 
 3. Create virtual environment\
