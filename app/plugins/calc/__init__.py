@@ -20,8 +20,7 @@ class CalcCommand(Command):
             'add': Calculator.add,
             'subtract': Calculator.subtract,
             'multiply': Calculator.multiply,
-            'divide': Calculator.divide,
-            'sqrt': Calculator.sqrt
+            'divide': Calculator.divide
         }
 
 
@@ -53,7 +52,7 @@ class CalcCommand(Command):
         # 4 inputs only 
         # while (args[0] != 'exit'):
         if len(args) != 3:
-            print("Usage: calc <number1> <number2> <operation>\n <operation>: 'add' 'subtract' 'multiply' 'divide' 'sqrt' (only 1 <number)")
+            print("Usage: calc <number1> <number2> <operation>\n <operation>: 'add' 'subtract' 'multiply' 'divide' ")
             return
         
         #Set arguments

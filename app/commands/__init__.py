@@ -15,6 +15,7 @@ class CommandHandler:
         ''' Any new Command_Name and Command-type command are passed in, 
         Register them into self.commands Dictonary such that key = command_name and command is the value'''
         self.commands[command_name] = command
+        print ("Registered", command_name)
         
     def execute_command(self, command_line):
         '''Executes command while safely handling parameters where needed'''
