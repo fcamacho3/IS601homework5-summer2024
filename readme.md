@@ -1,7 +1,7 @@
+# IS601 Homework 5-- summer2024
+
 # Submission Details
 
-Neel Patel\
-nap48
 
 # Installation Instructions
 
@@ -21,8 +21,8 @@ pip install faker
 
 2. Clone this repo
 ```
-git clone git@github.com:NeelAPatel/NJIT-IS601-homework3.git
-cd NJIT-IS601-homework3
+git clone git@github.com:fcamacho3/IS601homework5-summer2024.git
+cd IS601homework5-summer2024
 ```
 
 3. Create virtual environment\
