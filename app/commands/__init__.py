@@ -42,7 +42,6 @@ class CommandHandler:
                 result = command.execute(*args)
                 if result is not None: 
                     print(result)
-                # print(result)
             except Exception as e:
                 print(f"Error executing command '{command_name}': {e}")
         else:

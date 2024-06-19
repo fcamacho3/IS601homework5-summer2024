@@ -1,52 +1,54 @@
-import importlib
-import pkgutil
-import multiprocessing
-from multiprocessing import Process
-from app.commands import CommandHandler, Command
+import os
+from importlib import import_module
 
-class App:
+from app.commands import CommandHandler
+from app.commands.add import AddCommand
+from app.commands.divide import DivideCommand
+from app.commands.exit import ExitCommand
+from app.commands.hello import HelloCommand
+from app.commands.multiply import MultiplyCommand
+from app.commands.subtract import SubtractCommand
+
+class App: 
     def __init__(self):
         self.command_handler = CommandHandler()
-        # Creating exit event to use exit command
-        self.exit_event = multiprocessing.Event()
 
-    def execute_command_in_process(self, command_input):
-        """Method to execute a command in a separate process."""
-        if command_input == "exit":
-            self.exit_event.set()
-        else:
-            self.command_handler.execute_command(command_input)
+    def start(self): 
+        #Looped Command Registration 
+        # self.command_handler.register
 
-    def pluginRegistration(self):
-        # Dynamically load all plugins in the plugins directory
-        pluginPath = 'app.plugins'
-        for _, plugin_name, is_pkg in pkgutil.iter_modules([pluginPath.replace('.', '/')]):
-            #For each item, item's name, and pkgFlag in path's list...
+        commands_path = os.path.join(os.path.dirname(__file__), 'commands')
+        folderIgnore = ['__pycache__']
+        for item in os.listdir(commands_path):
+            try:
+                # Check if the item is a directory and construct the path to it
+                item_path = os.path.join(commands_path, item)
+                if not os.path.isdir(item_path):
+                    continue
+                
+                # ignore pycache and other extraneous folders
+                if item in folderIgnore: 
+                    continue
+                
+                #== Everything is good --> Build the registry
+                # Assume the class is named with the format: CommandnameCommand (e.g., AddCommand)
+                command_class_name = f'{item.capitalize()}Command' # generating command name 
+                command_module = import_module(f'.commands.{item}', 'app')
+                command_class = getattr(command_module, command_class_name) #pairing module and class together
 
-            if is_pkg:  # Ensure it's a package
+                # Instantiate the command class
+                command_instance = command_class()
 
-                #Grabs module aka the plugin package folder
-                plugin_module = importlib.import_module(f'{pluginPath}.{plugin_name}')
+                # Register the command with the command handler
+                self.command_handler.register_command(item, command_instance)
 
-                # for each item in folder, check if theres a subclass and register it as a command
-                for item_name in dir(plugin_module):
-                    item = getattr(plugin_module, item_name)
-                    try:
-                        if issubclass(item, (Command)):
-                            self.command_handler.register_command(plugin_name, item())
-                    except TypeError:
-                        continue  # Ignore if not class
-            else:
-                continue
+            except Exception as e:
+                # Handle any errors in command registration
+                print(f'An error occurred while registering the command {item}: {e}')
 
-    def start(self):
-        # Register plugins as usual
-        self.pluginRegistration()
-
-        #Staring repel process
-        print("Type 'exit' to exit.")
-        while not self.exit_event.is_set():  # Check the exit event
-            command_input = input(">>> ").strip()
-            command_process = Process(target=self.execute_command_in_process, args=(command_input,))
-            command_process.start()
-            command_process.join()
+        print("Type 'exit y' to exit.")
+        while True:  #REPL Read, Evaluate, Print, Loop
+            result = self.command_handler.execute_command(input(">>> ").strip()) 
+            
+            if result is not None:
+                print(result)
